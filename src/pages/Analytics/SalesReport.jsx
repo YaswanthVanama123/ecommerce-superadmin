@@ -30,8 +30,21 @@ const SalesReport = () => {
         getTopProducts(10),
       ]);
 
-      setSalesData(salesRes.data || []);
-      setTopProducts(topProductsRes.products || []);
+      // Backend returns: { success: true, data: {...} }
+      const salesResData = salesRes.data || salesRes;
+      const topProductsResData = topProductsRes.data || topProductsRes;
+
+      // Extract array from response - handle various response formats
+      const salesArray = Array.isArray(salesResData)
+        ? salesResData
+        : (salesResData.salesData || salesResData.data || salesResData.chartData || []);
+
+      const topProductsArray = Array.isArray(topProductsResData)
+        ? topProductsResData
+        : (topProductsResData.products || topProductsResData.topProducts || []);
+
+      setSalesData(salesArray);
+      setTopProducts(topProductsArray);
     } catch (error) {
       console.error('Error fetching sales data:', error);
       toast.error('Failed to load sales report');
@@ -58,8 +71,12 @@ const SalesReport = () => {
     );
   }
 
-  const totalRevenue = salesData.reduce((sum, item) => sum + (item.revenue || 0), 0);
-  const totalOrders = salesData.reduce((sum, item) => sum + (item.orders || 0), 0);
+  const totalRevenue = Array.isArray(salesData)
+    ? salesData.reduce((sum, item) => sum + (item.revenue || 0), 0)
+    : 0;
+  const totalOrders = Array.isArray(salesData)
+    ? salesData.reduce((sum, item) => sum + (item.orders || 0), 0)
+    : 0;
   const averageOrderValue = totalOrders > 0 ? totalRevenue / totalOrders : 0;
 
   return (
@@ -184,11 +201,23 @@ const SalesReport = () => {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center">
-                        <img
-                          src={product.image || 'https://via.placeholder.com/40'}
-                          alt={product.name}
-                          className="w-10 h-10 rounded-lg object-cover"
-                        />
+                        {product.image ? (
+                          <img
+                            src={product.image}
+                            alt={product.name}
+                            className="w-10 h-10 rounded-lg object-cover"
+                            onError={(e) => {
+                              e.target.style.display = 'none';
+                              e.target.nextSibling.style.display = 'flex';
+                            }}
+                          />
+                        ) : null}
+                        <div
+                          className="w-10 h-10 rounded-lg bg-gray-200 flex items-center justify-center text-gray-500 font-semibold text-xs"
+                          style={{ display: product.image ? 'none' : 'flex' }}
+                        >
+                          {product.name?.charAt(0).toUpperCase() || 'P'}
+                        </div>
                         <div className="ml-4">
                           <div className="text-sm font-medium text-gray-900">{product.name}</div>
                           <div className="text-sm text-gray-500">{product.sku}</div>

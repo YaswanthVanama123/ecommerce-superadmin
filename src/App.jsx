@@ -9,6 +9,10 @@ import Layout from './components/common/Layout';
 // Pages
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
+import Settings from './pages/Settings';
+import AuditLogs from './pages/AuditLogs';
+import Reports from './pages/Reports';
+import NotFound from './pages/NotFound';
 
 // Products
 import ProductList from './pages/Products/ProductList';
@@ -27,8 +31,12 @@ import UserList from './pages/Users/UserList';
 import UserDetail from './pages/Users/UserDetail';
 
 // Admins
+import Admins from './pages/Admins';
 import AdminList from './pages/Admins/AdminList';
 import AddAdmin from './pages/Admins/AddAdmin';
+
+// Pincodes
+import Pincodes from './pages/Pincodes';
 
 // Analytics
 import SalesReport from './pages/Analytics/SalesReport';
@@ -85,6 +93,14 @@ function App() {
                       path="/admins"
                       element={
                         <PrivateRoute requireSuperAdmin={true}>
+                          <Admins />
+                        </PrivateRoute>
+                      }
+                    />
+                    <Route
+                      path="/admins/list"
+                      element={
+                        <PrivateRoute requireSuperAdmin={true}>
                           <AdminList />
                         </PrivateRoute>
                       }
@@ -94,6 +110,16 @@ function App() {
                       element={
                         <PrivateRoute requireSuperAdmin={true}>
                           <AddAdmin />
+                        </PrivateRoute>
+                      }
+                    />
+
+                    {/* Pincodes - SuperAdmin only */}
+                    <Route
+                      path="/pincodes"
+                      element={
+                        <PrivateRoute requireSuperAdmin={true}>
+                          <Pincodes />
                         </PrivateRoute>
                       }
                     />
@@ -115,6 +141,32 @@ function App() {
                         </PrivateRoute>
                       }
                     />
+
+                    {/* Audit Logs - SuperAdmin only */}
+                    <Route
+                      path="/audit-logs"
+                      element={
+                        <PrivateRoute requireSuperAdmin={true}>
+                          <AuditLogs />
+                        </PrivateRoute>
+                      }
+                    />
+
+                    {/* Reports - SuperAdmin only */}
+                    <Route
+                      path="/reports"
+                      element={
+                        <PrivateRoute requireSuperAdmin={true}>
+                          <Reports />
+                        </PrivateRoute>
+                      }
+                    />
+
+                    {/* Settings - Available to all authenticated users */}
+                    <Route path="/settings" element={<Settings />} />
+
+                    {/* 404 - Not Found */}
+                    <Route path="*" element={<NotFound />} />
                   </Routes>
                 </Layout>
               </PrivateRoute>

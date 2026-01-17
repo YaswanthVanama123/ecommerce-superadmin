@@ -17,9 +17,11 @@ const OrderList = () => {
   const fetchOrders = async () => {
     setLoading(true);
     try {
-      const response = await getOrders(page, 10, statusFilter);
-      setOrders(response.orders || []);
-      setTotalPages(response.totalPages || 1);
+      const response = await getOrders({ page, limit: 10, status: statusFilter });
+      // Backend returns: { success: true, data: { orders: [...], pagination: {...} } }
+      const data = response.data || response;
+      setOrders(data.orders || []);
+      setTotalPages(data.pagination?.totalPages || data.totalPages || 1);
     } catch (error) {
       console.error('Error fetching orders:', error);
       toast.error('Failed to load orders');

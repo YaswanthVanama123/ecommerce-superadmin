@@ -109,11 +109,23 @@ const OrderDetail = () => {
             <div className="space-y-4">
               {order.items?.map((item, index) => (
                 <div key={index} className="flex items-center space-x-4 border-b border-gray-200 pb-4 last:border-0">
-                  <img
-                    src={item.product?.image || 'https://via.placeholder.com/80'}
-                    alt={item.product?.name}
-                    className="w-20 h-20 rounded-lg object-cover"
-                  />
+                  {item.product?.image ? (
+                    <img
+                      src={item.product.image}
+                      alt={item.product?.name}
+                      className="w-20 h-20 rounded-lg object-cover"
+                      onError={(e) => {
+                        e.target.style.display = 'none';
+                        e.target.nextSibling.style.display = 'flex';
+                      }}
+                    />
+                  ) : null}
+                  <div
+                    className="w-20 h-20 rounded-lg bg-gray-200 flex items-center justify-center text-gray-500 font-semibold text-xl"
+                    style={{ display: item.product?.image ? 'none' : 'flex' }}
+                  >
+                    {item.product?.name?.charAt(0).toUpperCase() || 'P'}
+                  </div>
                   <div className="flex-1">
                     <h3 className="font-medium text-gray-900">{item.product?.name || 'Product'}</h3>
                     <p className="text-sm text-gray-600">SKU: {item.product?.sku || 'N/A'}</p>

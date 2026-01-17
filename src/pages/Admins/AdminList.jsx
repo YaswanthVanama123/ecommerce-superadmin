@@ -15,7 +15,9 @@ const AdminList = () => {
     setLoading(true);
     try {
       const response = await getAdmins();
-      setAdmins(response.admins || []);
+      // Backend returns: { success: true, data: { admins: [...] } } or { success: true, data: [...] }
+      const data = response.data || response;
+      setAdmins(data.admins || data || []);
     } catch (error) {
       console.error('Error fetching admins:', error);
       toast.error('Failed to load admins');
@@ -105,10 +107,12 @@ const AdminList = () => {
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center">
                         <div className="w-10 h-10 bg-purple-600 rounded-full flex items-center justify-center text-white font-semibold">
-                          {admin.name ? admin.name.charAt(0).toUpperCase() : admin.email.charAt(0).toUpperCase()}
+                          {admin.firstName ? admin.firstName.charAt(0).toUpperCase() : admin.email.charAt(0).toUpperCase()}
                         </div>
                         <div className="ml-4">
-                          <div className="text-sm font-medium text-gray-900">{admin.name || 'N/A'}</div>
+                          <div className="text-sm font-medium text-gray-900">
+                            {admin.firstName && admin.lastName ? `${admin.firstName} ${admin.lastName}` : admin.email}
+                          </div>
                         </div>
                       </div>
                     </td>

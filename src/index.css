@@ -40,3 +40,64 @@ code {
   background: #555;
 }
 
+/* Print styles for reports */
+@media print {
+  @page {
+    size: A4;
+    margin: 1cm;
+  }
+
+  body {
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+
+  /* Hide elements when printing */
+  .print\\:hidden {
+    display: none !important;
+  }
+
+  /* Show elements only when printing */
+  .print\\:block {
+    display: block !important;
+  }
+
+  /* Remove shadows and borders for print */
+  .print\\:shadow-none {
+    box-shadow: none !important;
+  }
+
+  /* Ensure proper page breaks */
+  .print\\:break-inside-avoid {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  /* Border styles for print */
+  .print\\:border {
+    border-width: 1px !important;
+  }
+
+  .print\\:border-blue-300 {
+    border-color: rgb(147 197 253) !important;
+  }
+
+  .print\\:border-green-300 {
+    border-color: rgb(134 239 172) !important;
+  }
+
+  .print\\:border-yellow-300 {
+    border-color: rgb(253 224 71) !important;
+  }
+
+  .print\\:border-purple-300 {
+    border-color: rgb(216 180 254) !important;
+  }
+
+  /* Ensure charts print properly */
+  .recharts-wrapper {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+}
+

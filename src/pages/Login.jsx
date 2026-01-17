@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, Navigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { toast } from 'react-toastify';
@@ -9,6 +9,14 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
   const { login, user } = useAuth();
   const navigate = useNavigate();
+
+  // Clear any existing tokens when login page loads (except if already logged in)
+  useEffect(() => {
+    if (!user) {
+      localStorage.removeItem('superadmin_token');
+      localStorage.removeItem('superadmin_user');
+    }
+  }, [user]);
 
   // Redirect if already logged in
   if (user) {

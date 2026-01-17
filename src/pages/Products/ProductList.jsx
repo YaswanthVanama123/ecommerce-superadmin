@@ -18,8 +18,10 @@ const ProductList = () => {
     setLoading(true);
     try {
       const response = await getProducts(page, 10, search);
-      setProducts(response.products || []);
-      setTotalPages(response.totalPages || 1);
+      // Backend returns: { success: true, data: { products: [...], pagination: {...} } }
+      const data = response.data || response;
+      setProducts(data.products || []);
+      setTotalPages(data.pagination?.totalPages || data.totalPages || 1);
     } catch (error) {
       console.error('Error fetching products:', error);
       toast.error('Failed to load products');
@@ -124,11 +126,23 @@ const ProductList = () => {
                   <tr key={product._id} className="hover:bg-gray-50">
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center">
-                        <img
-                          src={product.image || 'https://via.placeholder.com/50'}
-                          alt={product.name}
-                          className="w-12 h-12 rounded-lg object-cover"
-                        />
+                        {product.image ? (
+                          <img
+                            src={product.image}
+                            alt={product.name}
+                            className="w-12 h-12 rounded-lg object-cover"
+                            onError={(e) => {
+                              e.target.style.display = 'none';
+                              e.target.nextSibling.style.display = 'flex';
+                            }}
+                          />
+                        ) : null}
+                        <div
+                          className="w-12 h-12 rounded-lg bg-gray-200 flex items-center justify-center text-gray-500 font-semibold"
+                          style={{ display: product.image ? 'none' : 'flex' }}
+                        >
+                          {product.name?.charAt(0).toUpperCase() || 'P'}
+                        </div>
                         <div className="ml-4">
                           <div className="text-sm font-medium text-gray-900">{product.name}</div>
                           <div className="text-sm text-gray-500">{product.sku}</div>
@@ -146,8 +160,15 @@ const ProductList = () => {
                       </span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <span className={`text-sm ${product.stock < 10 ? 'text-red-600 font-semibold' : 'text-gray-900'}`}>
-                        {product.stock}
+                      <span className={`text-sm ${
+                        Array.isArray(product.stock)
+                          ? (product.stock.reduce((sum, item) => sum + (item.quantity || 0), 0) < 10 ? 'text-red-600 font-semibold' : 'text-gray-900')
+                          : (product.stock < 10 ? 'text-red-600 font-semibold' : 'text-gray-900')
+                      }`}>
+                        {Array.isArray(product.stock)
+                          ? product.stock.reduce((sum, item) => sum + (item.quantity || 0), 0)
+                          : (product.stock || 0)
+                        }
                       </span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">

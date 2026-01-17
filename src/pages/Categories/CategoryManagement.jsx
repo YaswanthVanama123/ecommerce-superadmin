@@ -17,7 +17,9 @@ const CategoryManagement = () => {
     setLoading(true);
     try {
       const response = await getCategories();
-      setCategories(response.categories || []);
+      // Backend returns: { success: true, data: [...] } (array directly)
+      const data = response.data || response;
+      setCategories(Array.isArray(data) ? data : (data.categories || []));
     } catch (error) {
       console.error('Error fetching categories:', error);
       toast.error('Failed to load categories');

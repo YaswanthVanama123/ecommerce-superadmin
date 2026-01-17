@@ -17,9 +17,11 @@ const UserList = () => {
   const fetchUsers = async () => {
     setLoading(true);
     try {
-      const response = await getUsers(page, 10, search);
-      setUsers(response.users || []);
-      setTotalPages(response.totalPages || 1);
+      const response = await getUsers({ page, limit: 10, search });
+      // Backend returns: { success: true, data: { users: [...], pagination: {...} } }
+      const data = response.data || response;
+      setUsers(data.users || []);
+      setTotalPages(data.pagination?.totalPages || data.totalPages || 1);
     } catch (error) {
       console.error('Error fetching users:', error);
       toast.error('Failed to load users');
