@@ -677,3 +677,257 @@ export const deletePincode = pincodesAPI.delete;
 export const bulkUploadPincodes = pincodesAPI.bulkUpload;
 export const getPincodeStats = pincodesAPI.getStats;
 export const downloadPincodeTemplate = pincodesAPI.downloadTemplate;
+
+// ====================================
+// Shipping Management APIs
+// ====================================
+export const shippingAPI = {
+  // ============ CRUD Operations ============
+  getAll: async (params = {}) => {
+    const { page = 1, limit = 10, search = '', status = '', deliveryZone = '' } = params;
+    const response = await axiosInstance.get('/superadmin/shipments', {
+      params: { page, limit, search, status, deliveryZone },
+    });
+    return response.data;
+  },
+
+  getById: async (id) => {
+    const response = await axiosInstance.get(`/superadmin/shipments/${id}`);
+    return response.data;
+  },
+
+  create: async (shipmentData) => {
+    const response = await axiosInstance.post('/superadmin/shipments', shipmentData);
+    return response.data;
+  },
+
+  update: async (id, shipmentData) => {
+    const response = await axiosInstance.put(`/superadmin/shipments/${id}`, shipmentData);
+    return response.data;
+  },
+
+  delete: async (id) => {
+    const response = await axiosInstance.delete(`/superadmin/shipments/${id}`);
+    return response.data;
+  },
+
+  // ============ Status Management ============
+  updateStatus: async (id, status, updateData = {}) => {
+    const response = await axiosInstance.patch(`/superadmin/shipments/${id}/status`, {
+      status,
+      ...updateData,
+    });
+    return response.data;
+  },
+
+  updateLocation: async (id, locationData) => {
+    const response = await axiosInstance.patch(`/superadmin/shipments/${id}/location`, locationData);
+    return response.data;
+  },
+
+  // ============ Bulk Operations ============
+  bulkCreate: async (shipmentsData) => {
+    const response = await axiosInstance.post('/superadmin/shipments/bulk-create', {
+      shipments: shipmentsData,
+    });
+    return response.data;
+  },
+
+  bulkUpdateStatus: async (shipmentIds, status, updateData = {}) => {
+    const response = await axiosInstance.patch('/superadmin/shipments/bulk-status', {
+      shipmentIds,
+      status,
+      ...updateData,
+    });
+    return response.data;
+  },
+
+  bulkAssign: async (shipmentIds, adminId) => {
+    const response = await axiosInstance.patch('/superadmin/shipments/bulk-assign', {
+      shipmentIds,
+      adminId,
+    });
+    return response.data;
+  },
+
+  bulkDelete: async (shipmentIds) => {
+    const response = await axiosInstance.delete('/superadmin/shipments/bulk-delete', {
+      data: { shipmentIds },
+    });
+    return response.data;
+  },
+
+  // ============ Assignment Operations ============
+  assignToAdmin: async (id, adminId) => {
+    const response = await axiosInstance.patch(`/superadmin/shipments/${id}/assign`, {
+      adminId,
+    });
+    return response.data;
+  },
+
+  unassignFromAdmin: async (id) => {
+    const response = await axiosInstance.patch(`/superadmin/shipments/${id}/unassign`);
+    return response.data;
+  },
+
+  reassign: async (id, newAdminId, reason = '') => {
+    const response = await axiosInstance.patch(`/superadmin/shipments/${id}/reassign`, {
+      newAdminId,
+      reason,
+    });
+    return response.data;
+  },
+
+  // ============ Tracking Operations ============
+  getTrackingHistory: async (id) => {
+    const response = await axiosInstance.get(`/superadmin/shipments/${id}/tracking-history`);
+    return response.data;
+  },
+
+  addTrackingUpdate: async (id, trackingData) => {
+    const response = await axiosInstance.post(`/superadmin/shipments/${id}/tracking`, trackingData);
+    return response.data;
+  },
+
+  // ============ Analytics & Reports ============
+  getAnalytics: async (params = {}) => {
+    const { startDate, endDate, period = 'weekly', deliveryZone = '' } = params;
+    const response = await axiosInstance.get('/superadmin/shipments/analytics', {
+      params: { startDate, endDate, period, deliveryZone },
+    });
+    return response.data;
+  },
+
+  getStats: async (params = {}) => {
+    const { startDate, endDate, deliveryZone = '' } = params;
+    const response = await axiosInstance.get('/superadmin/shipments/stats', {
+      params: { startDate, endDate, deliveryZone },
+    });
+    return response.data;
+  },
+
+  getDashboardMetrics: async () => {
+    const response = await axiosInstance.get('/superadmin/shipments/dashboard-metrics');
+    return response.data;
+  },
+
+  getDeliveryPerformance: async (params = {}) => {
+    const { startDate, endDate, adminId = '', deliveryZone = '' } = params;
+    const response = await axiosInstance.get('/superadmin/shipments/delivery-performance', {
+      params: { startDate, endDate, adminId, deliveryZone },
+    });
+    return response.data;
+  },
+
+  // ============ Search & Filter ============
+  searchByTrackingNumber: async (trackingNumber) => {
+    const response = await axiosInstance.get('/superadmin/shipments/search', {
+      params: { trackingNumber },
+    });
+    return response.data;
+  },
+
+  searchByOrderId: async (orderId) => {
+    const response = await axiosInstance.get('/superadmin/shipments/search-by-order', {
+      params: { orderId },
+    });
+    return response.data;
+  },
+
+  getByDeliveryZone: async (zone, params = {}) => {
+    const { page = 1, limit = 10, status = '' } = params;
+    const response = await axiosInstance.get(`/superadmin/shipments/zone/${zone}`, {
+      params: { page, limit, status },
+    });
+    return response.data;
+  },
+
+  getByAdmin: async (adminId, params = {}) => {
+    const { page = 1, limit = 10, status = '' } = params;
+    const response = await axiosInstance.get(`/superadmin/shipments/admin/${adminId}`, {
+      params: { page, limit, status },
+    });
+    return response.data;
+  },
+
+  // ============ Export & Import ============
+  exportShipments: async (params = {}) => {
+    const { startDate, endDate, status = '', deliveryZone = '', format = 'csv' } = params;
+    const response = await axiosInstance.get('/superadmin/shipments/export', {
+      params: { startDate, endDate, status, deliveryZone, format },
+      responseType: 'blob',
+    });
+    return response.data;
+  },
+
+  downloadReport: async (reportType, params = {}) => {
+    const { startDate, endDate, format = 'pdf' } = params;
+    const response = await axiosInstance.get(`/superadmin/shipments/reports/${reportType}`, {
+      params: { startDate, endDate, format },
+      responseType: 'blob',
+    });
+    return response.data;
+  },
+
+  // ============ Notifications ============
+  sendNotification: async (id, notificationData) => {
+    const response = await axiosInstance.post(`/superadmin/shipments/${id}/notify`, notificationData);
+    return response.data;
+  },
+
+  sendBulkNotification: async (shipmentIds, notificationData) => {
+    const response = await axiosInstance.post('/superadmin/shipments/bulk-notify', {
+      shipmentIds,
+      ...notificationData,
+    });
+    return response.data;
+  },
+
+  // ============ Issues & Exceptions ============
+  getIssues: async (params = {}) => {
+    const { page = 1, limit = 10, severity = '', status = '' } = params;
+    const response = await axiosInstance.get('/superadmin/shipments/issues', {
+      params: { page, limit, severity, status },
+    });
+    return response.data;
+  },
+
+  reportIssue: async (id, issueData) => {
+    const response = await axiosInstance.post(`/superadmin/shipments/${id}/report-issue`, issueData);
+    return response.data;
+  },
+
+  resolveIssue: async (id, issueId, resolution) => {
+    const response = await axiosInstance.patch(`/superadmin/shipments/${id}/issues/${issueId}/resolve`, {
+      resolution,
+    });
+    return response.data;
+  },
+
+  // ============ Rate Calculator ============
+  calculateShippingRate: async (rateData) => {
+    const response = await axiosInstance.post('/superadmin/shipments/calculate-rate', rateData);
+    return response.data;
+  },
+
+  updateShippingRates: async (ratesData) => {
+    const response = await axiosInstance.put('/superadmin/shipments/rates', ratesData);
+    return response.data;
+  },
+
+  getShippingRates: async () => {
+    const response = await axiosInstance.get('/superadmin/shipments/rates');
+    return response.data;
+  },
+};
+
+// Legacy exports for backward compatibility
+export const getShipments = shippingAPI.getAll;
+export const getShipmentById = shippingAPI.getById;
+export const createShipment = shippingAPI.create;
+export const updateShipment = shippingAPI.update;
+export const deleteShipment = shippingAPI.delete;
+export const updateShipmentStatus = shippingAPI.updateStatus;
+export const assignShipmentToAdmin = shippingAPI.assignToAdmin;
+export const getShipmentAnalytics = shippingAPI.getAnalytics;
+export const exportShipments = shippingAPI.exportShipments;

@@ -7,7 +7,8 @@ const CategoryManagement = () => {
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [editingCategory, setEditingCategory] = useState(null);
-  const [formData, setFormData] = useState({ name: '', description: '' });
+  const [formData, setFormData] = useState({ name: '', description: '', image: '' });
+  const [uploadingImage, setUploadingImage] = useState(false);
 
   useEffect(() => {
     fetchCategories();
@@ -41,7 +42,7 @@ const CategoryManagement = () => {
         toast.success('Category created successfully');
       }
       setShowModal(false);
-      setFormData({ name: '', description: '' });
+      setFormData({ name: '', description: '', image: '' });
       setEditingCategory(null);
       fetchCategories();
     } catch (error) {
@@ -52,7 +53,11 @@ const CategoryManagement = () => {
 
   const handleEdit = (category) => {
     setEditingCategory(category);
-    setFormData({ name: category.name, description: category.description || '' });
+    setFormData({
+      name: category.name,
+      description: category.description || '',
+      image: category.image || ''
+    });
     setShowModal(true);
   };
 
@@ -74,7 +79,7 @@ const CategoryManagement = () => {
   const handleCloseModal = () => {
     setShowModal(false);
     setEditingCategory(null);
-    setFormData({ name: '', description: '' });
+    setFormData({ name: '', description: '', image: '' });
   };
 
   if (loading) {
@@ -168,6 +173,40 @@ const CategoryManagement = () => {
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   placeholder="Enter category description"
                 />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Category Image URL
+                </label>
+                <input
+                  type="url"
+                  value={formData.image}
+                  onChange={(e) => setFormData({ ...formData, image: e.target.value })}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  placeholder="Enter image URL (e.g., https://example.com/image.jpg)"
+                />
+                <p className="text-xs text-gray-500 mt-1">
+                  Recommended: Square images (512x512px or larger) for best results
+                </p>
+                {formData.image && (
+                  <div className="mt-3">
+                    <p className="text-sm font-medium text-gray-700 mb-2">Preview:</p>
+                    <div className="w-32 h-32 border-2 border-gray-200 rounded-lg overflow-hidden">
+                      <img
+                        src={formData.image}
+                        alt="Category preview"
+                        className="w-full h-full object-cover"
+                        onError={(e) => {
+                          e.target.style.display = 'none';
+                          e.target.nextSibling.style.display = 'flex';
+                        }}
+                      />
+                      <div className="w-full h-full hidden items-center justify-center bg-gray-100 text-gray-400 text-xs">
+                        Invalid URL
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
               <div className="flex space-x-4">
                 <button

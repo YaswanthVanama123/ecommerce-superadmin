@@ -240,12 +240,12 @@ const Settings = () => {
   };
 
   const tabs = [
-    { id: 'general', name: 'General', icon: '⚙️' },
-    { id: 'email', name: 'Email', icon: '📧' },
-    { id: 'payment', name: 'Payment', icon: '💳' },
-    { id: 'shipping', name: 'Shipping', icon: '🚚' },
-    { id: 'security', name: 'Security', icon: '🔒' },
-    { id: 'appearance', name: 'Appearance', icon: '🎨' }
+    { id: 'general', name: 'General', icon: 'fa-solid fa-gear' },
+    { id: 'email', name: 'Email', icon: 'fa-solid fa-envelope' },
+    { id: 'payment', name: 'Payment', icon: 'fa-solid fa-credit-card' },
+    { id: 'shipping', name: 'Shipping', icon: 'fa-solid fa-truck-fast' },
+    { id: 'security', name: 'Security', icon: 'fa-solid fa-shield-halved' },
+    { id: 'appearance', name: 'Appearance', icon: 'fa-solid fa-palette' }
   ];
 
   if (loading) {
@@ -257,63 +257,97 @@ const Settings = () => {
   }
 
   return (
-    <div className="p-6 space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold text-gray-900">System Settings</h1>
-        <p className="text-gray-600 mt-1">Manage your application configuration</p>
-      </div>
-
-      <div className="bg-white rounded-xl shadow-md">
-        {/* Tabs */}
-        <div className="border-b border-gray-200">
-          <nav className="flex -mb-px overflow-x-auto">
-            {tabs.map((tab) => (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
-                className={`
-                  px-6 py-4 text-sm font-medium border-b-2 whitespace-nowrap
-                  ${activeTab === tab.id
-                    ? 'border-blue-500 text-blue-600'
-                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                  }
-                `}
-              >
-                <span className="mr-2">{tab.icon}</span>
-                {tab.name}
-              </button>
-            ))}
-          </nav>
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-indigo-50 p-6">
+      <div className="max-w-7xl mx-auto space-y-6">
+        {/* Header */}
+        <div className="bg-white rounded-2xl shadow-lg p-8 border border-gray-100">
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+                System Settings
+              </h1>
+              <p className="text-gray-600 mt-2 text-lg">Configure and manage your application</p>
+            </div>
+            <div className="hidden md:flex items-center space-x-3">
+              <div className="flex items-center px-4 py-2 bg-green-50 rounded-lg border border-green-200">
+                <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse mr-2"></div>
+                <span className="text-sm font-medium text-green-700">System Active</span>
+              </div>
+            </div>
+          </div>
         </div>
 
+        {/* Main Settings Card */}
+        <div className="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
+          {/* Tabs */}
+          <div className="border-b border-gray-200 bg-gradient-to-r from-gray-50 to-gray-100">
+            <nav className="flex -mb-px overflow-x-auto scrollbar-hide px-4">
+              {tabs.map((tab) => (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id)}
+                  className={`
+                    group relative px-6 py-5 text-sm font-semibold whitespace-nowrap transition-all duration-200
+                    ${activeTab === tab.id
+                      ? 'text-blue-600'
+                      : 'text-gray-600 hover:text-gray-900'
+                    }
+                  `}
+                >
+                  <div className="flex items-center space-x-2">
+                    <i className={`${tab.icon} text-lg`}></i>
+                    <span>{tab.name}</span>
+                  </div>
+                  {activeTab === tab.id && (
+                    <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-t-full"></div>
+                  )}
+                  {activeTab !== tab.id && (
+                    <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gray-300 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                  )}
+                </button>
+              ))}
+            </nav>
+          </div>
+
         {/* Tab Content */}
-        <div className="p-6">
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+        <div className="p-8 bg-gradient-to-br from-white to-gray-50">
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
 
             {/* General Settings */}
             {activeTab === 'general' && (
-              <div className="space-y-6">
-                <div>
-                  <h3 className="text-lg font-semibold text-gray-900 mb-4">General Information</h3>
+              <div className="space-y-8 animate-fadeIn">
+                <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                  <div className="flex items-center mb-6">
+                    <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center mr-4">
+                      <i className="fa-solid fa-circle-info text-white text-xl"></i>
+                    </div>
+                    <div>
+                      <h3 className="text-xl font-bold text-gray-900">General Information</h3>
+                      <p className="text-sm text-gray-500">Basic site information and contact details</p>
+                    </div>
+                  </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                      <label className="block text-sm font-semibold text-gray-700 mb-2">
                         Site Name <span className="text-red-500">*</span>
                       </label>
                       <input
                         type="text"
                         {...register('siteName', { required: 'Site name is required' })}
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors bg-gray-50 hover:bg-white"
                         placeholder="My Awesome Store"
                       />
                       {errors.siteName && (
-                        <p className="mt-1 text-sm text-red-600">{errors.siteName.message}</p>
+                        <p className="mt-2 text-sm text-red-600 flex items-center">
+                          <i className="fa-solid fa-circle-exclamation mr-2"></i>
+                          {errors.siteName.message}
+                        </p>
                       )}
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                      <label className="block text-sm font-semibold text-gray-700 mb-2">
                         Contact Email <span className="text-red-500">*</span>
                       </label>
                       <input
@@ -325,11 +359,14 @@ const Settings = () => {
                             message: 'Invalid email address'
                           }
                         })}
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors bg-gray-50 hover:bg-white"
                         placeholder="contact@example.com"
                       />
                       {errors.contactEmail && (
-                        <p className="mt-1 text-sm text-red-600">{errors.contactEmail.message}</p>
+                        <p className="mt-2 text-sm text-red-600 flex items-center">
+                          <i className="fa-solid fa-circle-exclamation mr-2"></i>
+                          {errors.contactEmail.message}
+                        </p>
                       )}
                     </div>
                   </div>
@@ -1108,24 +1145,46 @@ const Settings = () => {
             )}
 
             {/* Save Button */}
-            <div className="flex items-center justify-between pt-6 border-t border-gray-200">
-              <div className="flex items-center space-x-2">
-                {saving && (
-                  <div className="flex items-center text-blue-600">
-                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600 mr-2"></div>
-                    <span className="text-sm">Saving...</span>
-                  </div>
-                )}
+            <div className="sticky bottom-0 bg-gradient-to-r from-white via-gray-50 to-white border-t-2 border-gray-200 pt-6 -mx-8 px-8 -mb-8 pb-8">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-3">
+                  {saving && (
+                    <div className="flex items-center px-4 py-2 bg-blue-50 rounded-lg border border-blue-200">
+                      <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-blue-600 mr-3"></div>
+                      <span className="text-sm font-medium text-blue-700">Saving changes...</span>
+                    </div>
+                  )}
+                </div>
+                <div className="flex items-center space-x-4">
+                  <button
+                    type="button"
+                    onClick={() => resetFormForTab(activeTab)}
+                    className="px-6 py-3 border-2 border-gray-300 rounded-xl text-gray-700 font-semibold hover:bg-gray-50 hover:border-gray-400 transition-all duration-200 shadow-sm"
+                  >
+                    Reset Changes
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={saving}
+                    className="relative px-8 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl font-bold hover:from-blue-700 hover:to-indigo-700 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 flex items-center space-x-2"
+                  >
+                    {saving ? (
+                      <>
+                        <i className="fa-solid fa-spinner fa-spin text-white"></i>
+                        <span>Saving...</span>
+                      </>
+                    ) : (
+                      <>
+                        <i className="fa-solid fa-check text-white"></i>
+                        <span>Save Changes</span>
+                      </>
+                    )}
+                  </button>
+                </div>
               </div>
-              <button
-                type="submit"
-                disabled={saving}
-                className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {saving ? 'Saving...' : 'Save Changes'}
-              </button>
             </div>
           </form>
+        </div>
         </div>
       </div>
     </div>
