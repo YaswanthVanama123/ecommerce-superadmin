@@ -33,15 +33,23 @@ const Login = () => {
 
     setLoading(true);
     try {
+      console.log('[Login] Attempting login...');
       const result = await login(email, password);
+      console.log('[Login] Login result:', result);
 
       if (result.success) {
+        console.log('[Login] Login successful, navigating to dashboard...');
         toast.success('Login successful!');
-        navigate('/dashboard');
+        // Use setTimeout to ensure state updates have propagated
+        setTimeout(() => {
+          navigate('/dashboard', { replace: true });
+        }, 100);
       } else {
+        console.log('[Login] Login failed:', result.message);
         toast.error(result.message || 'Login failed');
       }
     } catch (error) {
+      console.error('[Login] Login error:', error);
       toast.error('An error occurred. Please try again.');
     } finally {
       setLoading(false);

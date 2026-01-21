@@ -40,17 +40,23 @@ export const AuthProvider = ({ children }) => {
   const login = async (email, password) => {
     try {
       setLoading(true);
+      console.log('[AuthContext] Making login API call...');
       const response = await authAPI.login({ email, password });
+      console.log('[AuthContext] Login API response:', response);
 
       // Backend sends: { success: true, data: { user, accessToken, refreshToken } }
       if (response.success && response.data?.accessToken && response.data?.user) {
         const { user, accessToken } = response.data;
+        console.log('[AuthContext] User data:', user);
+        console.log('[AuthContext] User role:', user.role);
 
         // Check if user has superadmin role
         if (user.role === 'superadmin') {
+          console.log('[AuthContext] User is superadmin, storing credentials...');
           localStorage.setItem('superadmin_token', accessToken);
           localStorage.setItem('superadmin_user', JSON.stringify(user));
           setUser(user);
+          console.log('[AuthContext] User state updated');
 
           toast.success('Login successful!', {
             position: 'top-right',
@@ -59,6 +65,7 @@ export const AuthProvider = ({ children }) => {
 
           return { success: true, user };
         } else {
+          console.log('[AuthContext] User is not superadmin, role:', user.role);
           toast.error('Access denied. Superadmin privileges required.', {
             position: 'top-right',
             autoClose: 3000,
@@ -70,12 +77,14 @@ export const AuthProvider = ({ children }) => {
         }
       }
 
+      console.log('[AuthContext] Invalid response structure');
       return {
         success: false,
         message: response.message || 'Invalid response from server'
       };
     } catch (error) {
-      console.error('Login error:', error);
+      console.error('[AuthContext] Login error:', error);
+      console.error('[AuthContext] Error response:', error.response?.data);
 
       const errorMessage = error.response?.data?.message ||
                           error.message ||
@@ -91,6 +100,7 @@ export const AuthProvider = ({ children }) => {
         message: errorMessage
       };
     } finally {
+      console.log('[AuthContext] Setting loading to false');
       setLoading(false);
     }
   };
